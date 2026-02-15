@@ -1,0 +1,37 @@
+services:
+  # Generate proto descriptor file
+  proto-gen:
+    build:
+      context: .
+      dockerfile: Dockerfile.proto
+    volumes:
+      - proto-descriptor:/out
+
+  # Python gRPC server
+  grpc-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "50051:50051"
+    depends_on:
+      proto-gen:
+        condition: service_completed_successfully
+
+  # Envoy proxy with grpc-json transcoding
+  envoy:
+    image: envoyproxy/envoy:v1.33.0
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./envoy.yaml:/etc/envoy/envoy.yaml:ro
+      - proto-descriptor:/proto:ro
+    command: ["envoy", "-c", "/etc/envoy/envoy.yaml", "--log-level", "info"]
+    depends_on:
+      proto-gen:
+        condition: service_completed_successfully
+      grpc-server:
+        condition: service_started
+
+volumes:
+  proto-descriptor:

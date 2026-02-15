@@ -1,0 +1,20 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
+
+# Copy proto files
+COPY proto/ proto/
+
+# Install dependencies
+RUN uv pip install --system grpcio-tools
+
+# Generate proto descriptor file at runtime (so it goes into the mounted volume)
+CMD python -m grpc_tools.protoc \
+    -I./proto \
+    --include_imports \
+    --include_source_info \
+    --descriptor_set_out=/out/proto.pb \
+    proto/echo.proto

@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package example;
+
+import "google/api/annotations.proto";
+import "google/protobuf/wrappers.proto";
+
+message ScalarBool {
+  bool b = 1;
+}
+
+message StringValue {
+  google.protobuf.StringValue s = 1;
+}
+
+message BoolValue {
+  google.protobuf.BoolValue b = 1;
+}
+
+service Echo {
+  rpc EchoScalarBool(ScalarBool) returns (ScalarBool) {
+    option (google.api.http) = {
+      post: "/example.Echo/EchoScalarBool"
+      body: "*"
+    };
+  }
+
+  rpc EchoStringValue(StringValue) returns (StringValue) {
+    option (google.api.http) = {
+      post: "/example.Echo/EchoStringValue"
+      body: "*"
+    };
+  }
+
+  rpc EchoBoolValue(BoolValue) returns (BoolValue) {
+    option (google.api.http) = {
+      post: "/example.Echo/EchoBoolValue"
+      body: "*"
+    };
+  }
+}

@@ -1,0 +1,8 @@
+.idea/
+__pycache__/
+*.pyc
+*.pb
+*_pb2.py
+*_pb2_grpc.py
+.venv/
+uv.lock
