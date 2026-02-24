@@ -29,6 +29,18 @@ The transcoder accepts wrapper types (e.g. `google.protobuf.BoolValue`, `google.
 
 Per the [Proto JSON spec](https://protobuf.dev/programming-guides/json/), wrapper types should be represented as the underlying JSON scalar directly, not as an object with a `value` field.
 
+### 3. Wrapper types with complex objects default to empty proto message
+
+When a wrapper type receives a JSON object that doesn't follow the `{"value": ...}` structure, the transcoder silently ignores the unrecognized keys and defaults to the proto empty message for that type:
+
+```json
+{"b": {"foo": "bar", "baz": 123}}     // BoolValue defaults to false
+{"s": {"name": "test", "items": [1]}} // StringValue defaults to ""
+{"b": {"value": true, "extra": "x"}}  // Extra keys ignored, value still parsed
+```
+
+This means malformed wrapper type payloads won't error—they'll silently produce default values, which can lead to subtle bugs.
+
 ## Running the Tests
 
 Start the services:

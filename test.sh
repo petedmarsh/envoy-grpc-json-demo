@@ -81,3 +81,22 @@ echo ""
 echo "Testing EchoStringValue with s={value: \"oh no\"}:"
 curl -s -H "content-type: application/json" -d '{"s": {"value": "oh no"}}' "$ENDPOINT/example.Echo/EchoStringValue"
 echo ""
+
+echo ""
+echo "=== Wrapper Type with Complex Object (non-{value: ...} form) Tests ==="
+echo ""
+echo "When a wrapper type receives a complex JSON object with keys other than 'value',"
+echo "the wrapper defaults to the empty proto message for that type."
+echo ""
+
+echo "Testing EchoBoolValue with b={foo: \"bar\", baz: 123, nested: {key: \"val\"}}:"
+curl -s -H "content-type: application/json" -d '{"b": {"foo": "bar", "baz": 123, "nested": {"key": "val"}}}' "$ENDPOINT/example.Echo/EchoBoolValue"
+echo ""
+
+echo "Testing EchoStringValue with s={name: \"test\", count: 42, items: [1, 2, 3]}:"
+curl -s -H "content-type: application/json" -d '{"s": {"name": "test", "count": 42, "items": [1, 2, 3]}}' "$ENDPOINT/example.Echo/EchoStringValue"
+echo ""
+
+echo "Testing EchoBoolValue with b={value: true, extra: \"ignored\"}:"
+curl -s -H "content-type: application/json" -d '{"b": {"value": true, "extra": "ignored"}}' "$ENDPOINT/example.Echo/EchoBoolValue"
+echo ""
